@@ -37,15 +37,12 @@ const logout = () => {
                             <a class="nav-link " href="#" id="listingMenu"  aria-expanded="false">Home</a>
 
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link " href="#" id="listingMenu"  aria-expanded="false">Rooms</a>
 
+                        <li class="nav-item dropdown">
+                            <a class="nav-link " href="/user/profile" id="listingMenu"  aria-expanded="false">Account</a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link " href="#" id="listingMenu"  aria-expanded="false">Account</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link " href="#" id="listingMenu"  aria-expanded="false">Customer Support</a>
+                            <a class="nav-link " href="/support" id="listingMenu"  aria-expanded="false">Customer Support</a>
                         </li>
 
                     </ul>
@@ -117,6 +114,9 @@ const logout = () => {
 
                             <li>
                                 <a class="dropdown-item" href="#"><i class="bi bi-info-circle fa-fw me-2"></i>Customer Support</a>
+                            </li>
+                            <li v-if="$page.props.auth.user">
+                                <a class="dropdown-item" href="/admin/dashboard" v-if="$page.props.auth.user.user_type =='admin'"><i class="bi bi-info-circle fa-fw me-2"></i>Admin Dashboard</a>
                             </li>
                             <li v-if="$page.props.auth.user">
                                 <a class="dropdown-item bg-danger-soft-hover" href="#" @click="logout"><i

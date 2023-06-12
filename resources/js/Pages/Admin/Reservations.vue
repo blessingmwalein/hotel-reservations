@@ -68,6 +68,20 @@ export default {
                 }));
             }
         },
+        approve(reservation) {
+            if (confirm('Are you sure you want to approve this reservation?')) {
+                this.form.post(route('admin.reservations.approve', {
+                    reservation: reservation.id
+                }));
+            }
+        },
+        cancel(reservation) {
+            if (confirm('Are you sure you want to cancel this reservation?')) {
+                this.form.post(route('admin.reservations.cancel', {
+                    reservation: reservation.id
+                }));
+            }
+        },
     }
 }
 </script>
@@ -206,6 +220,10 @@ export default {
                         <div class="col">
                             <a href="#" class="btn btn-sm btn-light mb-0" data-bs-toggle="modal"
                                 data-bs-target="#inquiryForm" @click="edit(reservation)">Edit</a>
+                            <a href="#" class="btn btn-sm btn-primary mb-0"
+                              @click="approve(reservation)">Approve</a>
+                            <a href="#" class="btn btn-sm btn-warning mb-0"
+                                @click="cancel(reservation)">Cancel</a>
                             <a href="#" class="btn btn-sm btn-danger mb-0"
                                 @click="deleteReservation(reservation)">Delete</a>
                         </div>

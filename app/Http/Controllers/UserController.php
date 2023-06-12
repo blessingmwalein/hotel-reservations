@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Reservation;
+use App\Models\Room;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -17,11 +19,54 @@ class UserController extends Controller
             'users' => User::all()
         ]);
     }
+    public function adminDash()
+    {
+
+        //pending reservations
+        $pendingReservations = Reservation::where('status', 'pending')->count();
+        $approvedReservations = Reservation::where('status', 'approved')->count();
+        $cancelled = Reservation::where('status', 'cancelled')->count();
+
+        //last 10 reservations
+        $lastReservations = Reservation::latest()->take(10)->get();
+        $rooms = Room::all()->count();
+        return Inertia::render('Admin/Dashboard', [
+            'pendingReservations' => $pendingReservations,
+            'approvedReservations' => $approvedReservations,
+            'cancelled' => $cancelled,
+            'rooms' => $rooms,
+            'reservations' => $lastReservations,
+        ]);
+    }
     public function profile()
     {
         return Inertia::render('User/Profile', [
             'user' => auth()->user()
         ]);
+    }
+    public function profileUpdate(Request $request)
+    {
+        $data = $request->validate([
+            'name' => 'required',
+            'phone_number' => 'required',
+        ]);
+
+        auth()->user()->update($data);
+
+        return redirect()->back()->with('success', 'Profile updated successfully');
+    }
+
+    public function passwordUpdate(Request $request)
+    {
+        $data = $request->validate([
+            'password' => 'required|confirmed',
+        ]);
+
+        auth()->user()->update([
+            'password' => bcrypt($data['password'])
+        ]);
+
+        return redirect()->back()->with('success', 'Password updated successfully');
     }
 
     /**

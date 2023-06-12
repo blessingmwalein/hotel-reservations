@@ -1,12 +1,48 @@
 
 <script>
 import UserDashboardLayout from '@/Layouts/UserDashboardLayout.vue';
+import { useForm } from '@inertiajs/vue3';
+import InputError from '@/Components/InputError.vue';
 
 export default {
     components: {
         UserDashboardLayout,
+        InputError
     },
-};
+
+    data() {
+        return {
+            userForm: useForm({
+                name: '',
+                phone_number: '',
+            }),
+
+            passwordForm: useForm({
+                current_password: '',
+                password: '',
+                password_confirmation: '',
+            }),
+        };
+    },
+    props: ['user'],
+
+    mounted() {
+        this.userForm.name = this.user.name;
+        this.userForm.phone_number = this.user.phone_number;
+
+
+    },
+
+    methods: {
+        updateUser() {
+            this.userForm.post(route('user.profile.update'));
+        },
+
+        updatePassword() {
+            this.passwordForm.post(route('user.password.update'));
+        },
+    }
+}
 </script>
 
 <template>
@@ -22,40 +58,7 @@ export default {
 
             <div class="vstack gap-4">
                 <!-- Verified message -->
-                <div class="bg-light rounded p-3">
-                    <!-- Progress bar -->
-                    <div class="overflow-hidden">
-                        <h6>Complete Your Profile</h6>
-                        <div class="progress progress-sm bg-success bg-opacity-10">
-                            <div class="progress-bar bg-success aos" role="progressbar" data-aos="slide-right"
-                                data-aos-delay="200" data-aos-duration="1000" data-aos-easing="ease-in-out"
-                                style="width: 85%" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100">
-                                <span class="progress-percent-simple h6 fw-light ms-auto">85%</span>
-                            </div>
-                        </div>
-                        <p class="mb-0">
-                            Get the best out of booking by adding the remaining
-                            details!
-                        </p>
-                    </div>
-                    <!-- Content -->
-                    <div class="bg-body rounded p-3 mt-3">
-                        <ul class="list-inline hstack flex-wrap gap-2 justify-content-between mb-0">
-                            <li class="list-inline-item h6 fw-normal mb-0">
-                                <a href="#"><i class="bi bi-check-circle-fill text-success me-2"></i>Verified
-                                    Email</a>
-                            </li>
-                            <li class="list-inline-item h6 fw-normal mb-0">
-                                <a href="#"><i class="bi bi-check-circle-fill text-success me-2"></i>Verified
-                                    Mobile Number</a>
-                            </li>
-                            <li class="list-inline-item h6 fw-normal mb-0">
-                                <a href="#" class="text-primary"><i class="bi bi-plus-circle-fill me-2"></i>Complete
-                                    Basic Info</a>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+
 
                 <!-- Personal info START -->
                 <div class="card border">
@@ -90,81 +93,32 @@ export default {
                             <!-- Name -->
                             <div class="col-md-6">
                                 <label class="form-label">Full Name<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" value="Jacqueline Miller"
+                                <input type="text" class="form-control" v-model="userForm.name"
                                     placeholder="Enter your full name" />
+                                <InputError class="mt-2" :message="userForm.errors.name" />
                             </div>
 
                             <!-- Email -->
                             <div class="col-md-6">
                                 <label class="form-label">Email address<span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" value="hello@gmail.com"
+                                <input type="email" class="form-control" v-model="user.email" disabled
                                     placeholder="Enter your email id" />
                             </div>
 
                             <!-- Mobile -->
                             <div class="col-md-6">
                                 <label class="form-label">Mobile number<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" value="222 555 666"
+                                <input type="text" class="form-control" v-model="userForm.phone_number"
                                     placeholder="Enter your mobile number" />
+                                <InputError class="mt-2" :message="userForm.errors.phone_number" />
                             </div>
 
-                            <!-- Nationality -->
-                            <div class="col-md-6">
-                                <label class="form-label">Nationality<span class="text-danger">*</span></label>
-                                <select class="form-select js-choice">
-                                    <option value="">Select your country</option>
-                                    <option>USA</option>
-                                    <option selected>Paris</option>
-                                    <option>India</option>
-                                    <option>UK</option>
-                                </select>
-                            </div>
 
-                            <!-- Date of birth -->
-                            <div class="col-md-6">
-                                <label class="form-label">Date of Birth<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control flatpickr" value="29 Aug 1996"
-                                    placeholder="Enter date of birth" data-date-format="d M Y" />
-                            </div>
 
-                            <!-- Gender -->
-                            <div class="col-md-6">
-                                <label class="form-label">Select Gender<span class="text-danger">*</span></label>
-                                <div class="d-flex gap-4">
-                                    <div class="form-check radio-bg-light">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                            id="flexRadioDefault1" checked="" />
-                                        <label class="form-check-label" for="flexRadioDefault1">
-                                            Male
-                                        </label>
-                                    </div>
-                                    <div class="form-check radio-bg-light">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                            id="flexRadioDefault2" />
-                                        <label class="form-check-label" for="flexRadioDefault2">
-                                            Female
-                                        </label>
-                                    </div>
-                                    <div class="form-check radio-bg-light">
-                                        <input class="form-check-input" type="radio" name="flexRadioDefault"
-                                            id="flexRadioDefault3" />
-                                        <label class="form-check-label" for="flexRadioDefault3">
-                                            Others
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Address -->
-                            <div class="col-12">
-                                <label class="form-label">Address</label>
-                                <textarea class="form-control" rows="3" spellcheck="false">
-                    2119 N Division Ave, New Hampshire, York, United States</textarea>
-                            </div>
 
                             <!-- Button -->
                             <div class="col-12 text-end">
-                                <a href="#" class="btn btn-primary mb-0">Save Changes</a>
+                                <a href="#" @click="updateUser()" class="btn btn-primary mb-0">Save Changes</a>
                             </div>
                         </form>
                         <!-- Form END -->
@@ -173,32 +127,6 @@ export default {
                 </div>
                 <!-- Personal info END -->
 
-                <!-- Update email START -->
-                <div class="card border">
-                    <!-- Card header -->
-                    <div class="card-header border-bottom">
-                        <h4 class="card-header-title">Update email</h4>
-                        <p class="mb-0">
-                            Your current email address is
-                            <span class="text-primary">example@gmail.com</span>
-                        </p>
-                    </div>
-
-                    <!-- Card body START -->
-                    <div class="card-body">
-                        <form>
-                            <!-- Email -->
-                            <label class="form-label">Enter your new email id<span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" placeholder="Enter your email id" />
-
-                            <div class="text-end mt-3">
-                                <a href="#" class="btn btn-primary mb-0">Save Email</a>
-                            </div>
-                        </form>
-                    </div>
-                    <!-- Card body END -->
-                </div>
-                <!-- Update email END -->
 
                 <!-- Update Password START -->
                 <div class="card border">
@@ -207,7 +135,7 @@ export default {
                         <h4 class="card-header-title">Update Password</h4>
                         <p class="mb-0">
                             Your current email address is
-                            <span class="text-primary">example@gmail.com</span>
+                            <span class="text-primary">{{ user.email }}</span>
                         </p>
                     </div>
 
@@ -216,27 +144,33 @@ export default {
                         <!-- Current password -->
                         <div class="mb-3">
                             <label class="form-label">Current password</label>
-                            <input class="form-control" type="password" placeholder="Enter current password" />
+                            <input class="form-control" type="password" v-model="passwordForm.currentPassword"
+                                placeholder="Enter current password" />
                         </div>
                         <!-- New password -->
                         <div class="mb-3">
                             <label class="form-label"> Enter new password</label>
                             <div class="input-group">
-                                <input class="form-control fakepassword" placeholder="Enter new password" type="password"
-                                    id="psw-input" />
+                                <input class="form-control fakepassword" v-model="passwordForm.password"
+                                    placeholder="Enter new password" type="password" id="psw-input" />
                                 <span class="input-group-text p-0 bg-transparent">
                                     <i class="fakepasswordicon fas fa-eye-slash cursor-pointer p-2"></i>
                                 </span>
+
                             </div>
+                            <InputError class="mt-2" :message="passwordForm.errors.password" />
+
                         </div>
                         <!-- Confirm -->
                         <div class="mb-3">
                             <label class="form-label">Confirm new password</label>
-                            <input class="form-control" type="password" placeholder="Confirm new password" />
+                            <input class="form-control" type="password" v-model="passwordForm.password_confirmation"
+                                placeholder="Confirm new password" />
+                            <InputError class="mt-2" :message="passwordForm.errors.password_confirmation" />
                         </div>
 
                         <div class="text-end">
-                            <a href="#" class="btn btn-primary mb-0">Change Password</a>
+                            <a href="#" @click="updatePassword()" class="btn btn-primary mb-0">Change Password</a>
                         </div>
                     </form>
                     <!-- Card body END -->

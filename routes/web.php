@@ -22,6 +22,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/', [RoomController::class, 'welcome'])->name('home');
+Route::get('/dashboard', [RoomController::class, 'welcome'])->name('home');
 Route::get('/rooms/{room}', [RoomController::class, 'show'])->name('room.show');
 Route::get('/rooms/{room}/book', [RoomController::class, 'book'])->name('room.book');
 Route::post('/room-feedback', [RoomFeedBackController::class, 'store'])->name('feedback.store');
@@ -36,9 +37,7 @@ Route::middleware([
 
     Route::prefix('admin')->group(function () {
         //dashboard
-        Route::get('/dashboard', function () {
-            return Inertia::render('Admin/Dashboard');
-        })->name('admin.dashboard');
+        Route::get('/dashboard', [UserController::class, 'adminDash'])->name('admin.dashboard');
 
 
         Route::get('/users', [UserController::class, 'index'])->name('admin.users');
@@ -66,6 +65,8 @@ Route::middleware([
         Route::post('/reservations/store', [ReservationController::class, 'store'])->name('admin.reservations.store');
         Route::put('/reservations/{reservation}/update', [ReservationController::class, 'update'])->name('admin.reservations.update');
         Route::delete('/reservations/{reservation}/delete', [ReservationController::class, 'destroy'])->name('admin.reservations.delete');
+        Route::post('/reservations/{reservation}/approve', [ReservationController::class, 'approve'])->name('admin.reservations.approve');
+        Route::post('/reservations/{reservation}/cancel', [ReservationController::class, 'cancel'])->name('admin.reservations.cancel');
 
 
 
@@ -82,6 +83,8 @@ Route::middleware([
         //dashboard
         Route::get('/reservations', [ReservationController::class, 'userReservations'])->name('user.reservations');
         Route::get('/profile', [UserController::class, 'profile'])->name('user.profile');
+        Route::post('/profile', [UserController::class, 'profileUpdate'])->name('user.profile.update');
+        Route::post('/profile/password', [UserController::class, 'passwordUpdate'])->name('user.password.update');
     });
 });
 

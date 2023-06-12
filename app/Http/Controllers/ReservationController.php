@@ -111,6 +111,32 @@ class ReservationController extends Controller
         $reservation->delete();
         return redirect()->back()->with('success', 'Reservation Deleted Successfully');
     }
+    public function approve(Reservation $reservation)
+    {
+
+        $reservation->update([
+            'status' => 'approved'
+        ]);
+
+        //update room status
+        $reservation->room->update([
+            'status' => 'unavailable'
+        ]);
+
+        return redirect()->back()->with('success', 'Reservation Deleted Successfully');
+    }
+    public function cancel(Reservation $reservation)
+    {
+
+        $reservation->update([
+            'status' => 'cancelled'
+        ]);
+
+        $reservation->room->update([
+            'status' => 'available'
+        ]);
+        return redirect()->back()->with('success', 'Reservation Deleted Successfully');
+    }
 
     public function createTransaction(Request $request, Reservation $reservation)
     {
@@ -146,7 +172,7 @@ class ReservationController extends Controller
         return Inertia::render('User/Reservations', [
             'pendingReservations' => $pendingReservations,
             'cancelledReservations' => $cancelledReservations,
-        'approvedReservations' => $approvedReservations,
+            'approvedReservations' => $approvedReservations,
             'rooms' => Room::all(),
             'users' => User::all()
         ]);
